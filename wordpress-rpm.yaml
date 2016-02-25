@@ -1,0 +1,12 @@
+---
+ - name: Creating Docker centos 7 container environment for building Wordpress rpm. 
+   hosts: dockerhost
+   remote_user: root
+ 
+   roles:
+    - common
+    - configure-docker-environment
+    - pulling-centos7-creating-instance
+    - installing-dependencies-and-installing-fpm-container
+    - downloading-wordpress-perform-modifications
+    - creating-rmp
