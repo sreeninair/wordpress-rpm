@@ -3,8 +3,8 @@
    yum: name=docker-engine state=present
  - name: starting docker service
    service: name=docker state=started enabled=yes
- - name: Pulling Docker Image
-   docker: image=centos7 state=present
+ - name: Create image from Dockerfile
+   shell: docker 
  - name: Creating container
    docker:
    name: centos7_for_rpmbuild

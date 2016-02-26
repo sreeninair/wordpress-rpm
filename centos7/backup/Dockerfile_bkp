@@ -1,0 +1,52 @@
+FROM scratch
+MAINTAINER The CentOS Project <cloud-ops@centos.org>
+ADD c7-docker.tar.xz /
+LABEL name="CentOS Base Image" \
+    vendor="CentOS" \
+    license="GPLv2" \
+    build-date="2016-02-17"
+RUN  yum install -y git-core zlib zlib-devel gcc-c++ patch readline readline-devel libyaml-devel libffi-devel openssl-devel make bzip2 autoconf automake libtool bison curl sqlite-devel wget rsync
+
+WORKDIR /root
+
+RUN git clone git://github.com/sstephenson/rbenv.git .rbenv
+
+RUN echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bash_profile
+
+RUN echo 'eval "$(rbenv init -)"' >> ~/.bash_profile
+RUN exec $SHELL
+
+RUN git clone git://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
+RUN echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bash_profile
+RUN echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bash_profile
+RUN exec $SHELL
+RUN source ~/.bash_profile
+RUN /root/.rbenv/bin/rbenv  install -v 2.2.1
+RUN /root/.rbenv/bin/rbenv global 2.2.1
+
+RUN /usr/bin/gem install fpm
+
+RUN mkdir /root/wordpress-rpm
+
+WORKDIR /root/wordpress-rpm
+
+RUN wget https://wordpress.org/latest.tar.gz
+
+RUN tar -xzvf latest.tar.gz
+
+ADD  wp-config.php /root/wordpress-rpm/
+
+#fpm -s dir -t rpm -n {PACKAGE_NAME} -v   `` -C  /root/wordpress-rpm/  --prefix={INSTALL_LOCATION}
+fpm -s dir -t rpm -n wordpress -v   4.4.2 -C /root/wordpress-rpm/ --prefix=/var/www/html1
+
+
+
+# Volumes for systemd
+# VOLUME ["/run", "/tmp"]
+
+# Environment for systemd
+# ENV container=docker
+
+# For systemd usage this changes to /usr/sbin/init
+# Keeping it as /bin/bash for compatability with previous
+CMD ["/bin/bash"]
