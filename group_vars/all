@@ -1,0 +1,5 @@
+image_name: myrmpimage
+database_name_here: test
+username_here: user1
+password_here: pass11
+host: localhost

@@ -18,8 +18,8 @@ RUN tar -xzvf latest.tar.gz
 
 ADD  wp-config.php /root/wordpress-rpm/
 
-#fpm -s dir -t rpm -n {PACKAGE_NAME} -v   `` -C  /root/wordpress-rpm/  --prefix={INSTALL_LOCATION}
-RUN fpm -s dir -t rpm -n wordpress -v   4.4.2 -C /root/wordpress-rpm --prefix=/var/www/html1
+#fpm -s dir -t rpm -n WORDPRESS -v   `` -C  /root/wordpress-rpm/  --prefix={INSTALL_LOCATION}
+RUN fpm -s dir -t rpm -n wordpress -v   4.4.2 -C /root/wordpress-rpm --prefix=/var/www/html
 
 
 

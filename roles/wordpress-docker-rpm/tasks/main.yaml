@@ -1,0 +1,29 @@
+---
+ - name: yum update
+   yum: name=* state=latest
+ - name: installing libselinux-python
+   yum: name=libselinux-python state=present
+ - name: copy rmp of pip
+   get_url: url=http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm dest=/root
+ - name: installing pip
+   yum: name=/root/epel-release-7-5.noarch.rpm state=present
+ - name: installing puthon pip
+   yum: name=python-pip state=present
+ - name: installing docker-py
+   command: pip install docker-py
+ - name: copy docker rpm
+   copy: src=docker.repo dest=/etc/yum.repos.d/docker.repo
+ - name: selinux disable
+   selinux: state=disabled
+ - name: rsync instalation
+   yum: name=rsync state=present
+ - name: copy custom docker file to host
+   copy: src=centos7 dest=/usr/local/src/
+ - name: copy custom wp-config template to host
+   template: src=wp-config.php.j2 dest=/usr/local/src/centos7/files/wp-config.php
+# - name: create images from docker file
+#   command: /usr/bin/docker build -t {{ image_name }} .
+#   args:
+#    chdir: /usr/local/src/centos7
+ - name: creating container from image
+    docker_image: path="/usr/local/src/centos7" name="{{ image_name }}" state=present
